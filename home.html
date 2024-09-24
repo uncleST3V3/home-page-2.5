@@ -1,0 +1,189 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steve's Home Page</title>
+</head>
+<body>
+    <h1>Daily Digest Brought to You by Steve</h1>
+
+    <div id="loginSection">
+        <form id="loginForm">
+            <input type="text" id="username" name="username" required class="input-field" placeholder="Username">
+            <input type="password" id="password" required class="input-field" placeholder="Password">
+            <input type="button" value="Login" onclick="loginUser()" class="button">
+            <input type="button" value="Register" class="button" onClick="window.location.href='/register'">
+        </form>
+    </div>
+
+    <div id="dashboardSection" style="display: none;">
+        <h2>Welcome back, <span id='displayFirstname'></span>!</h2>
+        <div id="weatherInfo">
+            <p>Loading weather and puppy dog...</p>
+        </div>
+        <div id="quoteInfo"></div>
+
+        <div id="dogImageContainer"></div>
+
+        <div id="buttons">
+            <a href="/account">
+                <button type="button" class="small-button">Change Account Settings</button> <br>
+            </a>
+            <a href="/">
+                <button type="button" class="small-button" onClick="logoutUser()">Log Out</button>
+            </a>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.onload = function(){
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser){
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('displayFirstname').innerText = currentUser.firstname;
+
+                getLocationAndWeather();
+                fetchMotivationalQuote();
+                
+                if (currentUser && currentUser.dogBreed) {
+                    displayDogPicture(currentUser.dogBreed);
+                } else {
+                    assignRandomBreed(currentUser);
+                }
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+            }
+        }
+
+        function loginUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const loggedInUser = users.find(user => user.username === username && user.password === password);
+            if (loggedInUser){
+                localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
+                window.location.reload();
+            } else {
+                alert("Incorrect username or password. Please try again.");
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            window.location.reload();
+        }
+
+        function getLocationAndWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(fetchWeatherData, showError);
+            } else {
+                document.getElementById("weatherInfo").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function fetchWeatherData(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const apiKey = 'ce7991bea2d81d5c1ba3e774dad5cae9';
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=imperial`;
+
+            fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const weatherInfoDiv = document.getElementById("weatherInfo");
+                    const weatherDescription = data.weather[0].description;
+                    const temperature = data.main.temp;
+                    const city = data.name;
+                    const feelsLike = data.main.feels_like;
+                    const windSpeed = data.wind.speed;
+                    const windDegrees = data.wind.deg;
+                    const directions = ['North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West'];
+                    const index = Math.round((windDegrees % 360) / 45) % 8;
+                    const windDirection = directions[index];
+                    weatherInfoDiv.innerHTML = `
+                        <p>The weather in ${city} is ${weatherDescription}</p>
+                        <p>The temperature is: ${Math.round(temperature)} &#8457 but feels like: ${Math.round(feelsLike)} &#8457</p>
+                        <p>And the wind is blowing from the ${windDirection} at ${Math.round(windSpeed)} mph</p>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById("weatherInfo").innerHTML = "Unable to fetch weather data";
+                    console.error("Error fetching weather data:", error);
+                });
+        }
+
+        async function fetchMotivationalQuote() {
+            const quoteUrl = 'https://api.quotable.io/random';
+            try {
+                const response = await fetch(quoteUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                const quoteText = data.content;
+                const quoteAuthor = data.author;
+                const quoteInfoDiv = document.getElementById("quoteInfo");
+                quoteInfoDiv.innerHTML = `
+                    <p><blockquote>
+                        "${quoteText}"<br> <br>
+                        <em>- ${quoteAuthor}</em>
+                    </blockquote></p>
+                `;
+            } catch (error) {
+                console.error("Error fetching motivational quote:", error);
+                document.getElementById("quoteInfo").innerHTML = "Could not fetch quote.";
+            }
+        }
+        
+        function assignRandomBreed(user) {
+            fetch('https://dog.ceo/api/breeds/list/all')
+                .then(response => response.json())
+                .then(data => {
+                    const breeds = Object.keys(data.message);
+                    const randomBreed = breeds[Math.floor(Math.random() * breeds.length)];
+                    user.dogBreed = randomBreed;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    displayDogPicture(randomBreed);
+                })
+                .catch(error => console.error('Error fetching random breed:', error));
+        }
+
+        function displayDogPicture(breed) {
+            const dogPictureUrl = `https://dog.ceo/api/breed/${breed}/images/random`;
+            fetch(dogPictureUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = data.message;
+                    imgElement.alt = `A picture of a ${breed}`;
+                    document.getElementById('dogImageContainer').innerHTML = '';
+                    document.getElementById('dogImageContainer').appendChild(imgElement);
+                })
+                .catch(error => console.error('Error fetching dog image:', error));
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("weatherInfo").innerHTML = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("weatherInfo").innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("weatherInfo").innerHTML = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("weatherInfo").innerHTML = "An unknown error occurred.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
