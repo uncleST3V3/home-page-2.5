@@ -1,10 +1,10 @@
 "use client"
-import Home from './home.js'
+import Register from './register'
 
 export default function Page() {
   return(
   <div> 
-    <Home />
+    <Register />
   </div>
   )
 }

@@ -15,7 +15,7 @@
 .button {
     width: 75%; 
     padding: 10px; 
-    border: none; 
+    border: 1px solid #007BFF; 
     border-radius: 5px; 
     background-color: #007BFF; 
     color: whitesmoke; 
@@ -94,7 +94,7 @@ h1 {
     align-items: center;
 }
 
-.input-field {
+#input-field {
     width: 75%; 
     padding: 10px; 
     margin: 5px 0; 

@@ -1,10 +1,10 @@
 "use client"
-import Home from './home.js'
+import Account from './account'
 
 export default function Page() {
   return(
   <div> 
-    <Home />
+    <Account />
   </div>
   )
 }
