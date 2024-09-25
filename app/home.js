@@ -78,13 +78,17 @@ export default function Home() {
     const fetchMotivationalQuote = async () => {
         try {
             const response = await fetch('https://api.quotable.io/random');
-            const data = await response.json();
-            setQuoteInfo(`"${data.content}" - ${data.author}`);
+            const data = await response.json()
+            if (data && data.content && data.author) {
+                setQuote(data.content)
+                setAuthor(data.author)
+            } else {
+                console.error('Failed to fetch quote data.')
+                }
         } catch (error) {
-            console.error("Error fetching quote:", error);
-            setQuoteInfo("Could not fetch quote.");
-        }
-    };
+            console.error('Error fetching quote:', error.message)
+            }
+    }
 
     const assignRandomBreed = async (user) => {
         try {
