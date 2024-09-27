@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-//eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from '../styles/styles.css'
+import styles from './styles/styles.css';
 
 export default function Register() {
     const [firstname, setFirstname] = useState("");
