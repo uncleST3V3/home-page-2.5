@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import styles from './styles/styles.css';
+
 
 export default function Account() {
     const [currentUser, setCurrentUser] = useState(null);
