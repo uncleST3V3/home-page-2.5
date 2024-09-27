@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import styles from './styles/styles.css';
+import Link from 'next/link';
 
 export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [weatherInfo, setWeatherInfo] = useState("Loading weather and puppy dog...");
     const [quoteInfo, setQuoteInfo] = useState("");
     const [dogImage, setDogImage] = useState("");
@@ -22,8 +25,6 @@ export default function Home() {
     }, []);
 
     const loginUser = () => {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
         const users = JSON.parse(localStorage.getItem('users')) || [];
         const loggedInUser = users.find(user => user.username === username && user.password === password);
         if (loggedInUser) {
@@ -55,33 +56,31 @@ export default function Home() {
         try {
             const response = await fetch(weatherUrl);
             const data = await response.json();
-            const weatherDescription = data.weather[0].description;
             const temperature = Math.round(data.main.temp);
             const feelsLike = Math.round(data.main.feels_like);
             const windSpeed = Math.round(data.wind.speed);
             const windDegrees = data.wind.deg;
-            const directions = ['North', 'North East', 'East', 'South East', 'South', 'South West', 'West', 'North West'];
+            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
             const index = Math.round((windDegrees % 360) / 45) % 8;
             const windDirection = directions[index];
 
             setWeatherInfo(`
-                The weather in ${data.name} is ${weatherDescription}.
-                Temperature: ${temperature}°F, feels like ${feelsLike}°F.
-                Wind: ${windSpeed} mph from the ${windDirection}.
+                ${data.name}, ${data.sys.country}\n
+                Temperature: ${temperature}°F\n
+                Feels Like: ${feelsLike}°F\n 
+                Wind: ${windDirection} ${windSpeed} mph
             `);
         } catch (error) {
             setWeatherInfo("Unable to fetch weather data.");
             console.error("Error fetching weather data:", error);
         }
-    };
-
+    }
     const fetchMotivationalQuote = async () => {
         try {
             const response = await fetch('https://api.quotable.io/random');
             const data = await response.json()
             if (data && data.content && data.author) {
-                setQuote(data.content)
-                setAuthor(data.author)
+                setQuoteInfo(`${data.content} - ${data.author}`)
             } else {
                 console.error('Failed to fetch quote data.')
                 }
@@ -137,8 +136,8 @@ export default function Home() {
             {currentUser ? (
                 <div id="dashboardSection">
                     <h2>Welcome back, {currentUser.firstname}!</h2>
-                    <div id="weatherInfo">
-                        <p>{weatherInfo}</p>
+                    <div id="weatherInfo" style={{whiteSpace: 'pre-line'}}>
+                        {weatherInfo}
                     </div>
                     <div id="quoteInfo">
                         <blockquote>{quoteInfo}</blockquote>
@@ -148,25 +147,25 @@ export default function Home() {
                             <img src={dogImage} alt={`A picture of a ${currentUser.dogBreed}`} />
                         </div>
                     )}
-                    <div id="buttons">
-                        <a href="/account">
-                            <button type="button" className={styles.smallButton}>Change Account Settings</button>
-                        </a>
-                        <a href="/">
-                            <button type="button" className={styles.smallButton} onClick={logoutUser}>Log Out</button>
-                        </a>
-                    </div>
+                    <Link href="/account">
+                        <button type="button" id="smallButton">Change Account Settings</button>
+                    </Link>    
+                    <Link href="/">
+                        <button type="button" id="smallButton" onClick={logoutUser}>Log Out</button>
+                    </Link>
                 </div>
             ) : (
                 <div id="loginSection">
                     <form id="loginForm">
-                        <input type="text" id="username" name="username" required className={styles.inputField} placeholder="Username" />
-                        <input type="password" id="password" required className={styles.inputField} placeholder="Password" />
-                        <input type="button" value="Login" onClick={loginUser} className={styles.button} />
-                        <input type="button" value="Register" onClick={() => window.location.href = '/register'} className={styles.button} />
+                        <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required id="inputField" placeholder="Username" />
+                        <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required id="inputField" placeholder="Password" />
+                        <button type="button" onClick={loginUser} id="button">Login</button>
+                        <Link href="/register" id="linkButton">
+                            <button type="button" id="button">Register</button>
+                        </Link>
                     </form>
                 </div>
             )}
         </div>
     );
-}
+}0

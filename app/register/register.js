@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import styles from '../styles/styles.css';
+import Link from 'next/link';
 
 export default function Register() {
     const [firstname, setFirstname] = useState("");
@@ -8,7 +8,6 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [dogBreed, setDogBreed] = useState("");
     const [breeds, setBreeds] = useState([]);
-    const router = useRouter();
 
     useEffect(() => {
         fetchBreeds();
@@ -58,7 +57,7 @@ export default function Register() {
             localStorage.setItem('users', JSON.stringify(users));
             alert("Your account has been created");
             localStorage.setItem('currentUser', JSON.stringify(newUser));
-            router.push('/');
+            window.location.href='/';
         }
     };
 
@@ -71,39 +70,35 @@ export default function Register() {
             <form id="registerForm">
                 <input 
                     type="text" 
-                    id="firstname" 
+                    id="inputField" 
                     name="firstname" 
                     required 
-                    className={styles.inputField} 
                     placeholder="What should we call you?" 
                     value={firstname} 
                     onChange={(e) => setFirstname(e.target.value)}
                 />
                 <input 
                     type="text" 
-                    id="username" 
+                    id="inputField" 
                     name="username" 
                     required 
-                    className={styles.inputField} 
                     placeholder="Username" 
                     value={username} 
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input 
                     type="password" 
-                    id="password" 
+                    id="inputField" 
                     name="password" 
                     required 
-                    className={styles.inputField} 
                     placeholder="Password" 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <label htmlFor="dogBreed" className={styles.dogBreedLabel}>Select Your Favorite Dog Breed</label>
+                <label htmlFor="dogBreed" id="dogBreedLabel">Select Your Favorite Dog Breed</label>
                 <select 
-                    id="dogBreed" 
+                    id="inputField" 
                     name="dogBreed" 
-                    className={styles.inputField}
                     value={dogBreed} 
                     onChange={(e) => setDogBreed(e.target.value)}
                 >
@@ -112,20 +107,14 @@ export default function Register() {
                         <option key={index} value={breed.value}>{breed.label}</option>
                     ))}
                 </select>
-                <button 
-                    type="button" 
-                    className={styles.button} 
-                    onClick={registerUser}
-                >
+                <button type="button" id="button" onClick={registerUser}>
                     Register
                 </button>
-                <button 
-                    type="button" 
-                    className={styles.button} 
-                    onClick={() => router.push('/')}
-                >
-                    Back
-                </button>
+                <Link href="/" passHref id="linkButton">
+                    <button type="button" id="button">
+                        Back
+                    </button>
+                </Link>
             </form>
         </div>
     );

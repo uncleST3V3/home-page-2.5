@@ -12,7 +12,7 @@
     text-align: center;
 }
 
-.button {
+#button {
     width: 75%; 
     padding: 10px; 
     border: 1px solid #007BFF; 
@@ -23,7 +23,7 @@
     margin: 5px;
 }
 
-.button:hover {
+#button:hover {
     background-color: #0056b3; 
 }
 
@@ -51,7 +51,7 @@ body {
     margin: 5px;
 }
 
-.dog-breed-label {
+#dogBreedLabel {
     margin: 5px;
 }
 
@@ -94,8 +94,8 @@ h1 {
     align-items: center;
 }
 
-#input-field {
-    width: 75%; 
+#inputField {
+    width: 68%; 
     padding: 10px; 
     margin: 5px 0; 
     border: 1px solid whitesmoke;
@@ -128,11 +128,19 @@ h1 {
     align-items: center;
 }
 
+/* makes the button wrapped in the Link the same size as the button above it*/
+#linkButton {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 #request {
     text-align: center;
 }
 
-.small-button {
+#smallButton {
     border: none; 
     border-radius: 5px; 
     background-color: #007BFF; 
@@ -143,6 +151,6 @@ h1 {
     width: auto;
 }
 
-.small-button:hover {
+#smallButton:hover {
     background-color: #0056b3; 
 }

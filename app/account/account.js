@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import styles from '../styles/styles.css';
+import Link from 'next/link';
 
 export default function Account() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -8,7 +8,6 @@ export default function Account() {
     const [newUsername, setNewUsername] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [newDogBreed, setNewDogBreed] = useState("");
-    const router = useRouter();
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -83,7 +82,7 @@ export default function Account() {
         } else {
             alert("Error saving your account settings, please try again.");
         }
-        router.push('/');
+        window.location.href='/';
     };
 
     return (
@@ -93,48 +92,43 @@ export default function Account() {
                 <h2>Howdy, {currentUser?.firstname || 'Guest'}!</h2>
                 <input 
                     type="text" 
-                    id="username" 
-                    name="username" 
-                    className={styles.inputField} 
+                    id="inputField" 
+                    name="username"  
                     placeholder="New Username"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
                 />
                 <input 
                     type="password" 
-                    id="password" 
+                    id="inputField" 
                     name="password" 
-                    className={styles.inputField} 
                     placeholder="New Password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <select 
-                    id="dogBreed" 
+                    id="inputField" 
                     name="dogBreed"
-                    className={styles.inputField}
                     value={newDogBreed}
                     onChange={(e) => setNewDogBreed(e.target.value)}
                 >
-                    <option value="">--Change Dog Breed--</option>
+                    <option value="">Dog Breed</option>
                     {breeds.map((breed, index) => (
                         <option key={index} value={breed.value}>{breed.label}</option>
                     ))}
                 </select>
                 <button 
                     type="button" 
-                    className={styles.button} 
+                    id="button" 
                     onClick={handleSaveChanges}
                 >
                     Save Changes
                 </button>
-                <button 
-                    type="button" 
-                    className={styles.button} 
-                    onClick={() => router.push('/')}
-                >
-                    Back
-                </button>
+                <Link href="/" passHref id="linkButton">
+                    <button type="button" id="button">
+                        Back
+                    </button>
+                </Link>
             </form>
         </div>
     );
