@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import styles from '../styles/styles.css';
 import Link from 'next/link';
 
 export default function Register() {
