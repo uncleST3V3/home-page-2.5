@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
+import styles from '../styles/styles.css'
 
 export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
