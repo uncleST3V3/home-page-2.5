@@ -134,7 +134,7 @@ export default function Home() {
             <h1>Daily Digest Brought to You by Steve</h1>
             {currentUser ? (
                 <div id="dashboardSection">
-                    <h2>Welcome back, {currentUser.firstname}!</h2>
+                    <h2>Hello {currentUser.firstname}!</h2>
                     <div id="weatherInfo" style={{whiteSpace: 'pre-line'}}>
                         {weatherInfo}
                     </div>
