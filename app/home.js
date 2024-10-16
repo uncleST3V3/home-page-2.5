@@ -74,10 +74,12 @@ export default function Home() {
             console.error("Error fetching weather data:", error);
         }
     }
+
     const fetchMotivationalQuote = async () => {
         try {
             const response = await fetch('https://api.quotable.io/random');
             const data = await response.json()
+            console.log (data);
             if (data && data.content && data.author) {
                 setQuoteInfo(`${data.content}\n\n - ${data.author}`)
             } else {
@@ -92,6 +94,7 @@ export default function Home() {
         try {
             const response = await fetch('https://dog.ceo/api/breeds/list/all');
             const data = await response.json();
+            console.log(data)
             const breeds = Object.keys(data.message);
             const randomBreed = breeds[Math.floor(Math.random() * breeds.length)];
             user.dogBreed = randomBreed;
