@@ -79,7 +79,7 @@ export default function Home() {
             const response = await fetch('https://api.quotable.io/random');
             const data = await response.json()
             if (data && data.content && data.author) {
-                setQuoteInfo(`${data.content} - ${data.author}`)
+                setQuoteInfo(`${data.content}\n\n - ${data.author}`)
             } else {
                 console.error('Failed to fetch quote data.')
                 }
@@ -129,16 +129,28 @@ export default function Home() {
         }
     };
 
+    const getGreeting = () => {
+        const currentHour = new Date().getHours();
+        if (currentHour < 12) {
+            return "Good Morning";
+        } else if (currentHour < 18) {
+            return "Good Afternoon";
+        } else {
+            return "Good Evening";
+        }
+    }
+
     return (
         <div>
             <h1>Daily Digest Brought to You by Steve</h1>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             {currentUser ? (
                 <div id="dashboardSection">
-                    <h2>Hello {currentUser.firstname}!</h2>
+                    <h2>{getGreeting()} {currentUser.firstname}!</h2>
                     <div id="weatherInfo" style={{whiteSpace: 'pre-line'}}>
                         {weatherInfo}
                     </div>
-                    <div id="quoteInfo">
+                    <div id="quoteInfo" style={{whiteSpace: 'pre-line'}}>
                         <blockquote>{quoteInfo}</blockquote>
                     </div>
                     {dogImage && (
