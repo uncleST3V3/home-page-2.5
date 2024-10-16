@@ -76,7 +76,7 @@ export default function Home() {
     }
     const fetchMotivationalQuote = async () => {
         try {
-            const response = await fetch('https://api.quotable.io/random');
+            const response = await fetch('http://api.quotable.io/random');
             const data = await response.json()
             if (data && data.content && data.author) {
                 setQuoteInfo(`${data.content}\n\n - ${data.author}`)
